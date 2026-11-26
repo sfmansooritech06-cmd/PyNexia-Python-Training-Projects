@@ -1,0 +1,66 @@
+
+from datetime import date, datetime
+import calendar
+
+
+def calculate_age(dob):
+    today = date.today()
+
+    if dob > today:
+        return None
+
+    years = today.year - dob.year
+    months = today.month - dob.month
+    days = today.day - dob.day
+
+    # Adjust days if today's day is smaller
+    if days < 0:
+        months -= 1
+
+        if today.month == 1:
+            previous_month = 12
+            previous_year = today.year - 1
+        else:
+            previous_month = today.month - 1
+            previous_year = today.year
+
+        days += calendar.monthrange(
+            previous_year, previous_month
+        )[1]
+
+    # Adjust months if necessary
+    if months < 0:
+        years -= 1
+        months += 12
+
+    return years, months, days
+
+
+def main():
+    print("===== AGE CALCULATOR =====")
+
+    try:
+        dob_input = input("Enter your date of birth (DD-MM-YYYY): ")
+
+        dob = datetime.strptime(
+            dob_input, "%d-%m-%Y"
+        ).date()
+
+        age = calculate_age(dob)
+
+        if age is None:
+            print("Error: Date of birth cannot be in the future.")
+        else:
+            years, months, days = age
+
+            print("\nYour Exact Age:")
+            print(f"Years  : {years}")
+            print(f"Months : {months}")
+            print(f"Days   : {days}")
+
+    except ValueError:
+        print("Invalid date! Please enter a valid date in DD-MM-YYYY format.")
+
+
+if __name__ == "__main__":
+    main()
